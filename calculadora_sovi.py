@@ -18,7 +18,12 @@ def show_store(default_name):
 
     for category, products in categories.items():
         st.markdown(f"### {category}")
-        total = st.number_input(f"Tamanho total da prateleira ({category}) em cm:", min_value=1, value=1000, key=f"{store_name}_{category}_total")
+        total = st.number_input(
+            f"Tamanho total da prateleira ({category}) em cm:",
+            min_value=1,
+            value=1000,
+            key=f"{store_name}_{category}_total"
+        )
         widths = {}
         for product in products:
             widths[product] = st.number_input(
@@ -49,11 +54,3 @@ with tab2:
 
 with tab3:
     show_store("Loja C")
-        for produto, valor in dados.items():
-            perc = (valor / total) * 100
-            st.write(f"- {produto}: {valor} cm → {perc:.1f}%")
-
-# Data do registro
-st.markdown("---")
-st.caption(f"Registro feito em: {datetime.date.today().strftime('%d/%m/%Y')}")
-
