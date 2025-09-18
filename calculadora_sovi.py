@@ -8,14 +8,23 @@ categories = {
     "Mainstream": ["Amstel"]
 }
 
+# Metas fixas (%)
+metas = {
+    "Craft": 26,
+    "Premium": 40,
+    "Mainstream": 30
+}
+
 # Função para exibir uma loja
 def show_store(default_name):
     store_name = st.text_input("Nome da loja:", value=default_name, key=f"name_{default_name}")
     st.subheader(f"{store_name}")
 
+    # Guardar totais da loja
     total_widths = {}
-    percentages = {}
+    category_totals = {}
 
+    # Primeiro pass: calcular ocupação de cada categoria
     for category, products in categories.items():
         st.markdown(f"### {category}")
         total = st.number_input(
@@ -27,30 +36,3 @@ def show_store(default_name):
         widths = {}
         for product in products:
             widths[product] = st.number_input(
-                f"{product} (cm)",
-                min_value=0,
-                value=0,
-                key=f"{store_name}_{category}_{product}"
-            )
-        total_widths[category] = total
-        percentages[category] = {p: (w / total) * 100 if total > 0 else 0 for p, w in widths.items()}
-
-        # Mostrar tabela resumo
-        df = pd.DataFrame({
-            "Produto": list(widths.keys()),
-            "Ocupação (cm)": list(widths.values()),
-            "% na categoria": [round(percentages[category][p], 2) for p in widths.keys()]
-        })
-        st.dataframe(df, use_container_width=True)
-
-# Tabs para as lojas
-tab1, tab2, tab3 = st.tabs(["Loja A", "Loja B", "Loja C"])
-
-with tab1:
-    show_store("Loja A")
-
-with tab2:
-    show_store("Loja B")
-
-with tab3:
-    show_store("Loja C")
