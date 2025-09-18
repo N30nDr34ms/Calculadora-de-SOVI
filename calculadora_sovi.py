@@ -36,3 +36,47 @@ def show_store(default_name):
         widths = {}
         for product in products:
             widths[product] = st.number_input(
+                f"{product} (cm)",
+                min_value=0,
+                value=0,
+                key=f"{store_name}_{category}_{product}"
+            )
+        total_widths[category] = total
+        category_totals[category] = sum(widths.values())
+
+        # Mostrar tabela resumo de produtos
+        df = pd.DataFrame({
+            "Produto": list(widths.keys()),
+            "Ocupação (cm)": list(widths.values()),
+            "% na categoria": [round((w / total) * 100, 2) if total > 0 else 0 for w in widths.values()]
+        })
+        st.dataframe(df, use_container_width=True)
+
+    # Calcular totais gerais para Real %
+    total_geral = sum(category_totals.values())
+
+    # Segundo pass: mostrar metas vs real por categoria
+    for category in categories.keys():
+        meta = metas[category]
+        real = (category_totals[category] / total_geral * 100) if total_geral > 0 else 0
+        diff = real - meta
+
+        resumo_df = pd.DataFrame({
+            "Categoria": [category],
+            "Meta (%)": [meta],
+            "Real (%)": [round(real, 2)],
+            "Diferença (%)": [round(diff, 2)]
+        })
+        st.dataframe(resumo_df, use_container_width=True)
+
+# Tabs para as lojas
+tab1, tab2, tab3 = st.tabs(["Loja A", "Loja B", "Loja C"])
+
+with tab1:
+    show_store("Loja A")
+
+with tab2:
+    show_store("Loja B")
+
+with tab3:
+    show_store("Loja C")
